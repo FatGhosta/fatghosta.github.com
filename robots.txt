@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: 
+
+Sitemap: http://FatGhosta.github.io/sitemap.xml 
