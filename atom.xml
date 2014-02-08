@@ -4,7 +4,7 @@
   <title><![CDATA[My Octopress Blog]]></title>
   <link href="http://FatGhosta.github.io/atom.xml" rel="self"/>
   <link href="http://FatGhosta.github.io/"/>
-  <updated>2014-02-07T19:14:17+08:00</updated>
+  <updated>2014-02-08T11:54:51+08:00</updated>
   <id>http://FatGhosta.github.io/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -12,5 +12,46 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[在CentOS中升级gitlab，从6.0升级到6.5]]></title>
+    <link href="http://FatGhosta.github.io/blog/2014/02/08/zai-centoszhong-sheng-ji-gitlab%2Ccong-6-dot-0sheng-ji-dao-6-dot-5/"/>
+    <updated>2014-02-08T11:26:00+08:00</updated>
+    <id>http://FatGhosta.github.io/blog/2014/02/08/zai-centoszhong-sheng-ji-gitlab,cong-6-dot-0sheng-ji-dao-6-dot-5</id>
+    <content type="html"><![CDATA[<p>春节期间，趁着同事们都不写代码的时候，我对gitlab进行了一次升级，版本从6.0升级到6.5。<br/>
+其实6.0到6.5增加的新特性不是很多，但是我怕以后升级不好升了，就抓紧春节这个机会做了升级。</p>
+
+<p>首先，看<a href="https://github.com/gitlabhq/gitlabhq/blob/master/doc/update/6.0-to-6.5.md">官方文档</a>。
+其实这事儿特别巧，当我决定春节升级的时候，gitlab的版本还在6.4，我知道每月20多号会有个新版本。
+但是令我愉快地是，居然官方给提供了一个6.0到6.5的升级文档，要不然我还得一个版本一个版本地升级（保险起见）。</p>
+
+<p>下面我记录一下，在按照官方版本升级的过程中我遇到的问题：<br/>
+1. 我第一次安装gitlab的时候特别巧，死活git clone不下gitlab。所以我是在github.com下载的zip包进行的解压。所以这次升级，我无法git fetch了。我是怎么升级的呢？首先备份了一下数据库，然后mv原来的gitlab文件夹到别处，最后克隆gitlab项目。<br/>
+2. 依旧是gitlab在<code>bundle install</code>过程中的老问题，charlock_holmes！源gem是依赖charlock_holmes的0.6.9.4版本，安装0.6.9，然后在gitlab文件夹下执行一次<code>bundle</code>,就可以了。或者按照这个方法<a href="https://github.com/gitlabhq/gitlabhq/issues/679#wiki-issuecomment-5282141">How to fix CharlockHolmes</a>。
+3. 安装logrotate。在CentOS里肯定不能apt-get了，<code>yum install logrotate*</code>。
+4. 整个过程很顺利，但是在完成升级后测试。遇到了<code>git clone http://mygitlab.com/me/project.git</code>出错的问题，具体问题见下：<a href="https://github.com/gitlabhq/gitlabhq/issues/5774">issue5774</a>。解决办法是升级nginx版本到1.4.4。</p>
+
+<p>下面我附一下nginx的升级过程，从0.8到1.4.4：<a href="http://wiki.nginx.org/Install#Official_Red_Hat.2FCentOS_packages">官方文档</a>
+1. 创建/etc/yum.repos.d/nginx.repo文件
+2. 编辑文件内容如下:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>[nginx]
+</span><span class='line'>name=nginx repo
+</span><span class='line'>baseurl=http://nginx.org/packages/centos/5/x86_64
+</span><span class='line'>gpgcheck=0
+</span><span class='line'>enabled=1</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+3. 执行<code>yum install nginx</code>即可完成升级</p>
+
+<p>注：在官方文档中提及第二步中添加的baseurl似乎不对，于是我在这个网址(<a href="http://nginx.org/packages/centos/">http://nginx.org/packages/centos/</a>) 下找到合适我服务器的baseurl。</p>
+]]></content>
+  </entry>
   
 </feed>
